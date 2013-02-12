@@ -62,8 +62,11 @@ with open(filename, 'r') as f:
 		# if we have a room format like "RM-3252", then we know the flooris 3. Otherwise simply use Infrastructure.
 		floor = "Infrastructure"
 		if room[0:2] == 'RM':
-			floor = room[3]
-			room = room[3:]
+			if room[3] == 'B':
+				floor = "Basement"
+			else:
+				floor = "Flr-" + room[3]
+			room = "Rm-" + room[3:]
 
 		status_json = json.dumps({"auth_token": auth_token, \
                             "api_key": api_key, \
@@ -123,9 +126,10 @@ with open(filename, 'r') as f:
 		temp += 2
                 uuid = parts[temp]
 
+		# Hardcode name to PresentValue
 		status_json = json.dumps({"auth_token": auth_token, \
                             "api_key": api_key, \
-                            "name": name \
+                            "name": "PresentValue" \
                          })
 		print >> f3, "Sending: " + name
 
