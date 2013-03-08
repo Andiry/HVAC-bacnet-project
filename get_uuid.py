@@ -21,8 +21,14 @@ auth_token = "2"
 
 url = "http://ob-ucsd-cse.ucsd.edu:8000/dataservice/api/sensors/context/raw_id="
 
-filename = "all_list.txt"
-f1 = open("uuid.txt", 'w')
+if len(sys.argv) < 2:
+        print "file name error"
+        sys.exit(0)
+
+filename = sys.argv[1]
+print "Processing file " + filename + "..."
+
+f1 = open("uuid-occupy.txt", 'w')
 with open(filename, 'r') as f:
 	for line in f:
 		line = line.rstrip()
@@ -52,6 +58,31 @@ with open(filename, 'r') as f:
 			uuid = parts[temp+2]
 
 		line = raw_id + " " + uuid + "\n"
+
+		url1 = "http://ob-ucsd-cse.ucsd.edu:8000/dataservice/api/sensors/" + uuid + "/sensorpoints"
+		try:
+		    response = http.request(
+		    url1, 
+		   "GET",
+		    headers={"X-BD-Api-Key": api_key, "X-BD-Auth-Token": auth_token}
+		    )
+
+		except Exception as e:
+		    print "Error: ", e
+
+		response = str(response)
+		response = response.rstrip()
+		parts = response.split("\"")
+
+		temp = 0
+		while temp < len(parts) and parts[temp] != 'id':
+			temp+=1
+
+		if temp < len(parts):
+			id1 = parts[temp+1]
+
+		id1 = id1[1:7]
+		line = raw_id + " " + uuid + " " + id1 + "\n"
 		print line
 		f1.write(line)
 
