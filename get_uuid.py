@@ -28,12 +28,14 @@ if len(sys.argv) < 2:
 filename = sys.argv[1]
 print "Processing file " + filename + "..."
 
-f1 = open("uuid-occupy.txt", 'w')
+f1 = open("uuid-occupy-room.txt", 'w')
 with open(filename, 'r') as f:
 	for line in f:
 		line = line.rstrip()
 		parts = line.split()
 		raw_id = parts[0] + "_" + parts[1] + "_" + parts[2]
+		room = parts[6]
+		room = room[3:]
 		req_url = url + raw_id
 
 		try:
@@ -57,7 +59,7 @@ with open(filename, 'r') as f:
 		if temp < len(parts):
 			uuid = parts[temp+2]
 
-		line = raw_id + " " + uuid + "\n"
+		line = room + " " + raw_id + " " + uuid + "\n"
 
 		url1 = "http://ob-ucsd-cse.ucsd.edu:8000/dataservice/api/sensors/" + uuid + "/sensorpoints"
 		try:
@@ -82,7 +84,7 @@ with open(filename, 'r') as f:
 			id1 = parts[temp+1]
 
 		id1 = id1[1:7]
-		line = raw_id + " " + uuid + " " + id1 + "\n"
+		line = room + " " + raw_id + " " + uuid + " " + id1 + "\n"
 		print line
 		f1.write(line)
 
